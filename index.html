@@ -360,6 +360,51 @@
             100% { transform: translateX(100%); }
         }
 
+        /* Certificates Section */
+        .certificates-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .certificate-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .certificate-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .certificate-card h3 {
+            color: var(--light);
+            margin-bottom: 15px;
+        }
+
+        .certificate-card p {
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .certificate-date {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
         /* Projects Section */
         .projects-container {
             display: grid;
@@ -639,6 +684,11 @@
                 max-width: 220px;
                 height: 220px;
             }
+            
+            .certificates-container,
+            .projects-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 576px) {
@@ -649,10 +699,6 @@
             .footer-content {
                 flex-direction: column;
                 gap: 20px;
-            }
-            
-            .projects-container {
-                grid-template-columns: 1fr;
             }
             
             .section-title:after {
@@ -677,6 +723,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#skills">Skills</a></li>
+                    <li><a href="#certificates">Certificates</a></li>
                     <li><a href="#projects">Projects</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -821,6 +868,25 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section class="certificates" id="certificates">
+        <div class="container">
+            <h2 class="section-title">My Certificates</h2>
+            <div class="certificates-container">
+                <div class="certificate-card">
+                    <div class="certificate-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Certificate of my Learning</h3>
+                    <p>These are the certificates I have earned through my learning experiences during my studies.</p>
+                    <div class="certificate-date">2024-2025</div>
+                    <a href="certificates.html" class="btn">View Certificate</a>
+                </div>
+                
             </div>
         </div>
     </section>
