@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Viewer | Joan Guevarra Esguerra</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables - IT/IS Theme */
+        :root {
+            --primary: #00d4ff;
+            --secondary: #0a192f;
+            --accent: #64ffda;
+            --dark: #0a192f;
+            --darker: #020c1b;
+            --light: #ccd6f6;
+            --text: #8892b0;
+            --card-bg: #112240;
+            --shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+            --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--darker);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 40px;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        /* Certificate Viewer Styles */
+        .certificate-viewer {
+            flex: 1;
+            padding: 120px 0 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .certificate-header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .certificate-header h1 {
+            color: var(--light);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            margin-bottom: 10px;
+        }
+
+        .certificate-header p {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .certificate-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .certificate-image {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .certificate-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .certificate-placeholder {
+            width: 100%;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .certificate-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .certificate-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--accent);
+            border-radius: 4px;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 1px solid var(--accent);
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(100, 255, 218, 0.1);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn:hover:before {
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--darker);
+        }
+
+        .btn-primary:before {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            padding: 30px 0 15px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(2, 12, 27, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--light);
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--darker);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(100, 255, 218, 0.1);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: calc(100vh - 80px);
+                background: var(--card-bg);
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                padding: 40px 30px;
+                transition: var(--transition);
+                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 10px 0;
+                width: 100%;
+                border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+            }
+            
+            .certificate-image, .certificate-placeholder {
+                min-height: 400px;
+                height: 400px;
+            }
+            
+            .certificate-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .certificate-image, .certificate-placeholder {
+                min-height: 300px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">JE</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#skills">Skills</a></li>
+                    <li><a href="index.html#certificates">Certificates</a></li>
+                    <li><a href="index.html#projects">Projects</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Certificate Viewer -->
+    <section class="certificate-viewer">
+        <div class="container">
+            <div class="certificate-header">
+                <h1>Certificate Viewer</h1>
+                <p>View and download your professional certificate</p>
+            </div>
+            
+            <div class="certificate-container">
+
+
+                <div class="certificate-image">
+                    <img src="PMI.png" alt="Certificate" id="certificate-img">
+                </div>
+                <div class="certificate-image">
+                    <img src="cyber security.png" alt="Certificate" id="certificate-img">
+                </div>
+                <div class="certificate-image">
+                    <img src="data analytics essentials.png" alt="Certificate" id="certificate-img">
+                </div>
+
+                <div class="certificate-image">
+                    <img src="data science.png" alt="Certificate" id="certificate-img">
+                </div>
+
+                <div class="certificate-image">
+                    <img src="engaging stake holders.png" alt="Certificate" id="certificate-img">
+                </div>
+
+                <div class="certificate-image">
+                    <img src="english for IT1.png" alt="Certificate" id="certificate-img">
+                </div>
+
+                <div class="certificate-image">
+                    <img src="english for it 2.png" alt="Certificate" id="certificate-img">
+                </div>
+
+                <div class="certificate-image">
+                    <img src="IRCITE.jpg" alt="Certificate" id="certificate-img">
+                </div>
+                <div class="certificate-image">
+                    <img src="junior cyber security.png" alt="Certificate" id="certificate-img">
+                </div>
+
+                <div class="certificate-image">
+                    <img src="multimedia.png" alt="Certificate" id="certificate-img">
+                </div>
+
+
+                
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Joan Esguerra</h3>
+                    <p>BSIS Student | UI Designer | Project Manager</p>
+                </div>
+                
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Joan Guevarra Esguerra. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Handle image loading error
+        document.getElementById('certificate-img').onerror = function() {
+            const certificateImage = document.querySelector('.certificate-image');
+            certificateImage.innerHTML = `
+                <div class="certificate-placeholder">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Certificate image not found</p>
+                    <p>Please check if "certi.png" exists in the correct location</p>
+                </div>
+            `;
+        };
+    </script>
+</body>
+</html>
